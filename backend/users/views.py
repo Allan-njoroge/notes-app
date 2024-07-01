@@ -44,3 +44,18 @@ def Logout(request):
         return Response(status=status.HTTP_205_RESET_CONTENT)
     except Exception as e:
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+# get user information
+@api_view(['GET'])
+def GetUser(request):
+    try:
+        user_id = request.query_params.get("id")
+        if user_id is None:
+            return Response ({"detail": "user id is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user = CustomUser.objects.get(id=user_id)
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)   
+    except Exception as e:
+        return Response({ "detail": str(e) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
